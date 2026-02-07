@@ -60,9 +60,49 @@ For each plugin, read its `.claude-plugin/plugin.json` for metadata.
 
 **Do NOT skip the bouncer's own entry.** Report yourself too — you earned your spot.
 
-### Step 2: Read the SKILL.md of Every Skill
+### Step 2: Show the Guest List — Let Them Pick
 
-This is critical. For EVERY skill you discover, actually read its `SKILL.md` content. You're looking for:
+Before checking anything, show the user everything you found. Print a numbered inventory:
+
+```
+Here's everyone who showed up tonight:
+
+  SKILLS
+  1. bouncer — That's me
+  2. find-skills — Skill discovery and install
+  3. frontend-design — UI/UX design
+  ...
+
+  PLUGINS
+  4. ralph-wiggum — Iterative development loop
+  5. frontend-design — Production-grade UI (plugin)
+  ...
+
+  MCP SERVERS
+  6. playwright — Browser automation
+  7. github — GitHub CLI integration
+  8. gmail — Gmail API
+  9. context7 — Documentation querying
+  10. mcp-atlassian — Jira integration
+  ...
+```
+
+Then use `AskUserQuestion` to ask:
+
+**"Which ones do you want me to check? I can verify they're installed and configured right."**
+
+Options:
+- **"All of them"** — Check everything
+- **"Just the MCP servers"** — Only check MCP server dependencies
+- **"Let me pick"** — Let the user specify by number or name
+
+If they say "let me pick", ask them to list the numbers or names. Only check what they select.
+
+If they say "all", check everything.
+
+### Step 3: Read the SKILL.md of Selected Items
+
+For every skill/plugin/MCP server the user selected, read its `SKILL.md` content. You're looking for:
 - Any mention of required CLI tools, packages, or binaries
 - Any mention of required environment variables or API keys
 - Any mention of required MCP servers
@@ -70,9 +110,9 @@ This is critical. For EVERY skill you discover, actually read its `SKILL.md` con
 - Any `allowedTools` in frontmatter that reference MCP tools (e.g. `mcp__something__*`)
 - Any instructions that reference external services
 
-Extract these into a dependency list per skill. If a skill's SKILL.md says it needs `npx playwright` or `SOME_API_KEY`, that's a dependency to check.
+Extract these into a dependency list per item. If a skill's SKILL.md says it needs `npx playwright` or `SOME_API_KEY`, that's a dependency to check.
 
-### Step 3: Cross-Reference the Known Registry
+### Step 4: Cross-Reference the Known Registry
 
 For MCP servers, match against this registry for known requirements:
 
@@ -163,7 +203,7 @@ supabase:
 
 For anything NOT in this registry: mark it as UNKNOWN and tell the user you couldn't auto-check it.
 
-### Step 4: Check IDs at the Door
+### Step 5: Check IDs at the Door
 
 Run checks for every dependency you found. Parallelize where possible.
 
@@ -188,7 +228,7 @@ npx <tool> --version 2>/dev/null && echo "INSTALLED" || echo "MISSING"
 gh auth status 2>&1
 ```
 
-### Step 5: The Velvet Rope — Print the Report
+### Step 6: The Velvet Rope — Print the Report
 
 Use this format. Bouncer voice. Failures first.
 
@@ -245,7 +285,7 @@ NO ID ON FILE (X)
 ══════════════════════════════════════════════
 ```
 
-### Step 6: The Interview — Walk Them Through Fixes
+### Step 7: The Interview — Walk Them Through Fixes
 
 After the report, don't just dump and run. For each failure, ask the user if they want to fix it NOW.
 
@@ -262,7 +302,7 @@ For each fix the user approves:
 
 If the user says skip, move on. No judgment — you're a professional.
 
-### Step 7: Final Count
+### Step 8: Final Count
 
 After all interviews are done, print a one-liner summary:
 
